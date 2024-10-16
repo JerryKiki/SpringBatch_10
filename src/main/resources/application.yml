@@ -1,7 +1,9 @@
 spring:
+  profiles:
+    active: dev
   batch:
     job:
-      names: ${job.name:helloWorldJob}
+      names: ${job.name:NONE}
     jdbc:
       initialize-schema: ALWAYS
   datasource:
@@ -11,3 +13,8 @@ spring:
     password:
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: create
+logging:
+  level:
+    com.koreait.exam.springbatch_10 : debug
