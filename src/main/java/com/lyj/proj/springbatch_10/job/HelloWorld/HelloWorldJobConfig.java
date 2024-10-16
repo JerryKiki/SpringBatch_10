@@ -30,20 +30,43 @@ public class HelloWorldJobConfig {
     public Job helloWorldJob() {
         return jobBuilderFactory.get("helloWorldJob")
                 .incrementer(new RunIdIncrementer()) // 매번 다른 ID를 실행할 때 강제로 파라미터로 부여 (auto_increment 강제부여)
-                .start(helloWorldStep1()).build();
+                .start(helloWorldStep1())
+                .next(helloWorldStep2())
+                .build();
     }
 
     @Bean
     @JobScope //생명주기 설정 : Step이므로, 상위 Job이 실행되었을 때 만들어지고 종료되었을 때 사라진다
     public Step helloWorldStep1() {
-        return stepBuilderFactory.get("helloWorldStep1").tasklet(helloWorldTasklet()).build();
+        return stepBuilderFactory
+                .get("helloWorldStep1")
+                .tasklet(helloWorldStep1Tasklet())
+                .build();
     }
 
     @Bean
     @StepScope //생명주기 설정 : 해당하는 Step이 실행되었을 때 만들어지고 종료되었을 때 사라진다
-    public Tasklet helloWorldTasklet() {
+    public Tasklet helloWorldStep1Tasklet() {
         return (stepContribution, chunkContext) -> {
             System.out.println("헬로월드!!!");
+            return RepeatStatus.FINISHED;
+        };
+    }
+
+    @Bean
+    @JobScope //생명주기 설정 : Step이므로, 상위 Job이 실행되었을 때 만들어지고 종료되었을 때 사라진다
+    public Step helloWorldStep2() {
+        return stepBuilderFactory
+                .get("helloWorldStep2")
+                .tasklet(helloWorldStep2Tasklet())
+                .build();
+    }
+
+    @Bean
+    @StepScope //생명주기 설정 : 해당하는 Step이 실행되었을 때 만들어지고 종료되었을 때 사라진다
+    public Tasklet helloWorldStep2Tasklet() {
+        return (stepContribution, chunkContext) -> {
+            System.out.println("헬로월드2222222222");
             return RepeatStatus.FINISHED;
         };
     }
