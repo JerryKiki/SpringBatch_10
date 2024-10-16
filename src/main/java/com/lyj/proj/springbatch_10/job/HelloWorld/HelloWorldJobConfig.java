@@ -67,6 +67,13 @@ public class HelloWorldJobConfig {
     public Tasklet helloWorldStep2Tasklet() {
         return (stepContribution, chunkContext) -> {
             System.out.println("헬로월드2222222222");
+
+            //테스트용으로 강제로 실패시켜보자
+            if(true) { //이것 또한 무조건 실행이지만, 이게 없으면 분리가 안되어있어 return이 unreachable이 되므로 실행이 안됨.
+                //unreachable인건 똑같긴 한데 어쨌든 분리되어있으니 막아주는것
+                throw new Exception("실패 : 헬로월드 태스클릿 2 실패");
+            }
+
             return RepeatStatus.FINISHED;
         };
     }
