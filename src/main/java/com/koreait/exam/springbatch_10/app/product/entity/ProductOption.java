@@ -22,6 +22,10 @@ public class ProductOption extends BaseEntity {
     private String color;
     private String size;
     private Integer price;
+    private int wholesalePrice;
+
+    private String displayColor;
+    private String displaySize;
 
     private boolean isSoldout; // 관련 옵션들의 판매불가 여부
     private int stockQuantity; // 보유 물건 갯수
@@ -32,7 +36,9 @@ public class ProductOption extends BaseEntity {
 
     public ProductOption(String color, String size) {
         this.color = color;
+        this.displayColor = color;
         this.size = size;
+        this.displaySize = size;
     }
 
     public boolean isOrderable(int quantity) {

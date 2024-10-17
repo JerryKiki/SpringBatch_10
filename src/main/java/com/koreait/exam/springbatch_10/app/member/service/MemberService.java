@@ -11,6 +11,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    //메서드 체이닝으로 빌더 패턴을 만들어서 복잡한 객체의 생성을 단순화
     public Member join(String username, String password, String email) {
         Member member = Member.builder()
                 .username(username)
