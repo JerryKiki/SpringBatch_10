@@ -22,10 +22,16 @@ import java.util.List;
 @Slf4j
 public class DevInitData {
 
+    private boolean initDataDone = false;
+
     @Bean
     public CommandLineRunner initData(MemberService memberService, ProductService productService, CartService cartService,
                                       OrderService orderService) {
         return args -> {
+
+            if (initDataDone) return;
+
+            initDataDone = true;
 
             //주문 헬퍼 생성. 주문을 만들때 도움 주는 클래스. 내부클래스(Inner Class)
             //보통 두 클래스가 서로 긴밀한 관계가 있거나, 하나의 클래스또는 메소드에서만 사용되는 클래스일 때 이용되는 기법
