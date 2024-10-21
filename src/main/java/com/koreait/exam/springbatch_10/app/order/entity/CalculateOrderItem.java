@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -46,6 +48,26 @@ public class CalculateOrderItem extends BaseEntity {
     private int refundQuantity; // 환불 한 갯수
     private boolean isPaid; // 결제 여부
 
+    // 상품
+    private String productName;
+
+    // 상품 옵션
+//    private String productOptionColor;
+//    private String productOptionSize;
+//    private String productOptionDisplayColor;
+//    private String productOptionDisplaySize;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "color", column = @Column(name = "product_option_color")),
+            @AttributeOverride(name = "size", column = @Column(name = "product_option_size")),
+            @AttributeOverride(name = "displayColor", column = @Column(name = "product_option_dispaly_color")),
+            @AttributeOverride(name = "displaySize", column = @Column(name = "product_option_dispaly_size")),
+    })
+    private CalculateOrderItem.EmbProductOption embProductOption;
+
+    private LocalDateTime orderItemCreatedDate;
+
     public CalculateOrderItem(OrderItem orderItem) {
         this.orderItem = orderItem;
         order = orderItem.getOrder();
@@ -59,29 +81,35 @@ public class CalculateOrderItem extends BaseEntity {
         pgFee = orderItem.getPgFee();
         refundQuantity = orderItem.getRefundQuantity();
         isPaid = orderItem.isPaid();
+
+        //상품
+        productName = orderItem.getProductOption().getProduct().getName();
+        //상품 옵션
+//        productOptionColor = orderItem.getProductOption().getColor();
+//        productOptionSize = orderItem.getProductOption().getSize();
+//        productOptionDisplayColor = orderItem.getProductOption().getDisplayColor();
+//        productOptionDisplaySize = orderItem.getProductOption().getDisplaySize();
+
+        embProductOption = new EmbProductOption(orderItem.getProductOption());
+
+        // 주문 품목이 생성된 시각
+        orderItemCreatedDate = orderItem.getCreateDate();
     }
 
-    public CalculateOrderItem(ProductOption productOption, int quantity) {
-        this.productOption = productOption;
-        this.quantity = quantity;
-        this.price = productOption.getPrice();
-        this.salePrice = productOption.getSalePrice();
-        this.wholesalePrice = productOption.getWholesalePrice();
+    @Embeddable
+    @NoArgsConstructor
+    public static class EmbProductOption {
+        private String color;
+        private String size;
+        private String displayColor;
+        private String displaySize;
+
+        public EmbProductOption(ProductOption productOption) {
+            color = productOption.getColor();
+            size = productOption.getSize();
+            displayColor = productOption.getDisplayColor();
+            displaySize = productOption.getDisplaySize();
+        }
     }
 
-    public int calculatePayPrice() {
-        return salePrice * quantity;
-    }
-
-    public void setPaymentDone() {
-        this.payPrice = calculatePayPrice();
-        this.isPaid = true;
-    }
-
-    public void setRefundDone() {
-        if (refundQuantity == quantity) return;
-
-        this.refundQuantity = quantity;
-        this.refundPrice = payPrice;
-    }
 }
