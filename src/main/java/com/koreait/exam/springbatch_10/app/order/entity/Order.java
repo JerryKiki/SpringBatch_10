@@ -17,18 +17,13 @@ import static javax.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-@Table(name="product_order")
+@Table(name = "product_order")
 public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    //기본값을 지정. 이렇게 명시해주면, List의 원래 기본값인 null이 아니라
-    // orderItems = new ArrayList<>(); 이거 자체가 기본값이 된다. 어떻게 보면 null 방지.
     @Builder.Default
-    //얘랑 연결될, 매핑이 될 놈을 mappedBy에 써줌. orderItems는 order에 의해 매핑될것이다...
-    //헷갈리니까 써두기. 얘는 Order class니깐, Order의 입장인 One이 먼저 나오는 것으로 추정.
-    //ManyToOne은 OrderItem 클래스에 써있다.
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -37,7 +32,46 @@ public class Order extends BaseEntity {
 
         orderItems.add(orderItem);
     }
+
+    public int calculatePayPrice() {
+        int payPrice = 0;
+
+        for (OrderItem orderItem : orderItems) {
+            payPrice += orderItem.calculatePayPrice();
+        }
+
+        return payPrice;
+    }
+
+    public void setPaymentDone() {
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setPaymentDone();
+        }
+    }
+
+    public int getPayPrice() {
+        int payPrice = 0;
+
+        for (OrderItem orderItem : orderItems) {
+            payPrice += orderItem.getPayPrice();
+        }
+
+        return payPrice;
+    }
+
+    public void setRefundDone() {
+        for(OrderItem orderItem : orderItems) {
+            orderItem.setRefundDone();
+        }
+    }
 }
+
+//@Builder.Default
+//기본값을 지정. 이렇게 명시해주면, List의 원래 기본값인 null이 아니라
+// orderItems = new ArrayList<>(); 이거 자체가 기본값이 된다. 어떻게 보면 null 방지.
+//얘랑 연결될, 매핑이 될 놈을 mappedBy에 써줌. orderItems는 order에 의해 매핑될것이다...
+//헷갈리니까 써두기. 얘는 Order class니깐, Order의 입장인 One이 먼저 나오는 것으로 추정.
+//ManyToOne은 OrderItem 클래스에 써있다.
 
 //@OneToMany, @ManyToOne => 두 클래스 간의 관계가 존재할 때, 어떤 관계인가를 명시
 //@ManyToOne은 관계가 존재한다면 필수. OneToMany는 필수는 아님

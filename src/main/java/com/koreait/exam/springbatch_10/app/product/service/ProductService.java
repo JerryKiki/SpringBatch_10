@@ -14,18 +14,18 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public Product create(String name, int wholesalePrice, String makerShopName, List<ProductOption> options) {
-
-        // / 100 * 100 의 정체는 100단위로 맞추기 위함
+    public Product create(String name, int salePrice, int wholesalePrice, String makerShopName, List<ProductOption> options) {
+        System.out.println("salePrice: " + salePrice);
         int price = (int) Math.ceil(wholesalePrice * 1.6) / 100 * 100;
 
         Product product = Product.builder()
                 .name(name)
+                .salePrice(salePrice)
                 .price(price)
                 .wholesalePrice(wholesalePrice)
                 .makerShopName(makerShopName).build();
 
-        for(ProductOption option : options){
+        for (ProductOption option : options) {
             product.addOption(option);
         }
 
