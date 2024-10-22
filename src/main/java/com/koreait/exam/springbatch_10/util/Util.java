@@ -7,14 +7,15 @@ import java.time.format.DateTimeFormatter;
 public class Util {
     public static class date {
         public static int getEndDayOf(int year, int month) {
-            String yearStr = year + "-";
-            String monthStr = month + "";
-
-            if(monthStr.length() == 1) {
-                monthStr = "0" + monthStr;
-            }
-
-            String yearMonth = yearStr + monthStr;
+//            String yearStr = year + "-";
+//            String monthStr = month + "";
+//
+//            if(monthStr.length() == 1) {
+//                monthStr = "0" + monthStr;
+//            }
+//
+//            String yearMonth = yearStr + monthStr;
+            String yearMonth = year + "-" + "%02d".formatted(month);
 
             return getEndDayOf(yearMonth);
         }
@@ -25,6 +26,10 @@ public class Util {
             convertedDate = convertedDate.withDayOfMonth(convertedDate.getMonth().length(convertedDate.isLeapYear()));
 
             return convertedDate.getDayOfMonth();
+        }
+
+        public static LocalDateTime parse(String pattern, String textDate) {
+            return LocalDateTime.parse(textDate, DateTimeFormatter.ofPattern(pattern));
         }
     }
 }
