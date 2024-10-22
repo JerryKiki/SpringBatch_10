@@ -31,5 +31,9 @@ public class Util {
         public static LocalDateTime parse(String pattern, String textDate) {
             return LocalDateTime.parse(textDate, DateTimeFormatter.ofPattern(pattern));
         }
+
+        public static LocalDateTime parse(String textDate) {
+            return parse("yyyy-MM-dd HH:mm:ss.SSSSSS", textDate);
+        }
     }
 }
