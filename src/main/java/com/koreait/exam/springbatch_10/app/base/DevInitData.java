@@ -33,8 +33,6 @@ public class DevInitData {
 
             initDataDone = true;
 
-            //주문 헬퍼 생성. 주문을 만들때 도움 주는 클래스. 내부클래스(Inner Class)
-            //보통 두 클래스가 서로 긴밀한 관계가 있거나, 하나의 클래스또는 메소드에서만 사용되는 클래스일 때 이용되는 기법
             class Helper {
                 public Order order(Member member, List<ProductOption> productOptions) {
                     for (int i = 0; i < productOptions.size(); i++) {
@@ -119,6 +117,8 @@ public class DevInitData {
             Order order4 = helper.order(member1, Arrays.asList(product1Option__RED_95, product2Option__WHITE_95));
 
             orderService.payByRestCashOnly(order4);
+
+            Order order5 = helper.order(member1, Arrays.asList(product1Option__RED_95, product2Option__WHITE_95));
         };
     }
 }
